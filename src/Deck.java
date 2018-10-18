@@ -1,5 +1,5 @@
 /**
- *  Rank: 0 - A, 1 - 2, ..., 13 - K
+ *  Rank: 0 - A, 1 - 2, ..., 12 - K
  */
 import java.util.Random;
 public class Deck {
@@ -12,7 +12,7 @@ public class Deck {
     private static int[] spade = new int[13];
     private static int[] club = new int[13];
     private static int[] diamond = new int[13];
-//    private String[] card =
+
 
     Deck(int deckNum){
         totalNum = 52 * deckNum;

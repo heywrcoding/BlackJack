@@ -8,5 +8,7 @@ public class Main {
             System.out.printf("%s ", cards[i].getSuit());
             System.out.println(cards[i].getRank());
         }
+
+
     }
 }

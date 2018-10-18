@@ -1,11 +1,11 @@
 public class SingleCard {
     private String suit;
-    private String rank;
+    private int rank;
 
     SingleCard(){
         String[] card = Deck.draw();
         suit = card[0];
-        rank = card[1];
+        rank = Integer.parseInt(card[1]);
     }
 //    private void setter (){
 //
@@ -13,7 +13,7 @@ public class SingleCard {
     public String getSuit(){
         return suit;
     }
-    public String getRank(){
+    public int getRank(){
         return rank;
     }
 }
