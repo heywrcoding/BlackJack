@@ -3,12 +3,13 @@ public class SingleCard {
     private String rank;
 
     SingleCard(){
-        Deck
+        String[] card = Deck.draw();
+        suit = card[0];
+        rank = card[1];
     }
-    public void setter (String s, String r){
-        suit = s;
-        rank = r;
-    }
+//    private void setter (){
+//
+//    }
     public String getSuit(){
         return suit;
     }

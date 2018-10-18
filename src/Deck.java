@@ -3,15 +3,15 @@
  */
 import java.util.Random;
 public class Deck {
-    private int totalNum;
-    private int heartNum;
-    private int spadeNum;
-    private int clubNum;
-    private int diamondNum;
-    private int[] heart = new int[13];
-    private int[] spade = new int[13];
-    private int[] club = new int[13];
-    private int[] diamond = new int[13];
+    private static int totalNum;
+    private static int heartNum;
+    private static int spadeNum;
+    private static int clubNum;
+    private static int diamondNum;
+    private static int[] heart = new int[13];
+    private static int[] spade = new int[13];
+    private static int[] club = new int[13];
+    private static int[] diamond = new int[13];
 //    private String[] card =
 
     Deck(int deckNum){
@@ -27,37 +27,38 @@ public class Deck {
             diamond[rank] = deckNum;
         }
     }
-    public String[] draw(){
+    public static String[] draw(){
         if(totalNum == 0){
             String[] wrongMessage = {"wrong", "wrong"};
             return wrongMessage;
         }
         // Begin drawing
         String[] card = randomCardGen();
-        //unfinished
+        String suit = card[0];
+        int rank = Integer.parseInt(card[1]);
         totalNum--;
         switch (suit){
             case "heart":
                 heartNum--;
-                heart[rank] = 0;
+                heart[rank]--;
                 break;
             case "spade":
                 spadeNum--;
-                spade[rank] = 0;
+                spade[rank]--;
                 break;
             case "club":
                 clubNum--;
-                club[rank] = 0;
+                club[rank]--;
                 break;
             case "diamond":
                 diamondNum--;
-                diamond[rank] = 0;
+                diamond[rank]--;
                 break;
         }
 
         return card;
     }
-    private String[] randomCardGen(){
+    private static String[] randomCardGen(){
         Random random = new Random();
         int randomNum = random.nextInt(totalNum);
         String[] card = new String[2];
