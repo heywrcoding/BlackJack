@@ -2,18 +2,20 @@ public class SingleCard {
     private String suit;
     private int rank;
 
-    SingleCard(){
+    SingleCard() {
         String[] card = Deck.draw();
         suit = card[0];
         rank = Integer.parseInt(card[1]);
     }
-//    private void setter (){
+
+    //    private void setter (){
 //
 //    }
-    public String getSuit(){
+    public String getSuit() {
         return suit;
     }
-    public int getRank(){
+
+    public int getRank() {
         return rank;
     }
 }
