@@ -53,16 +53,18 @@ public class Game {
             checkWinner();
             if (winnerIndex == playerNumInGame - 1){
                 System.out.println("Winner is " + dealer.playerName);
+                printScore();
             }
             else {
                 System.out.println("Winner is " + players[winnerIndex].playerName);
+                printScore();
             }
         }
     }
 
     private void hitOrStand() {
         for (int i = 0; i < playerNumInGame - 1; i++) {
-            if (players[i].status == 0) {
+            if (players[i].getStatus() == 0) {
                 System.out.println(players[i].playerName + ", do you want to hit another card ? (1 for yes, others for no)");
                 yesOrNoFlag = scanner.nextInt();
                 if (yesOrNoFlag == 1) {
@@ -107,6 +109,13 @@ public class Game {
             }
         }
 
+    }
+
+    private void printScore() {
+        for (int i = 0; i < playerNumInGame - 1; i++) {
+            System.out.printf("%s gets %d, ", players[i].playerName, players[i].getScore());
+        }
+        System.out.println(dealer.playerName + " gets " + dealer.getScore());
     }
 
 

@@ -3,10 +3,9 @@ import java.util.LinkedList;
 public class Player {
     public String playerName;
     public static int playerNum = 0;
-    public int status; //Whether a player has passed. 0 for initial value; 1 for has passed.
     public static int endFlag = 0;
 
-
+    private int status; //Whether a player has passed. 0 for initial value; 1 for has passed.
     protected int currentScore; //Total score of hand cards.
     private static int turnNum;
     private int token;
@@ -39,7 +38,7 @@ public class Player {
 
         SingleCard firstOpenCard = Dealer.deal();
         openCards.add(firstOpenCard);
-        System.out.printf("%s takes %s %d \n", playerName, firstOpenCard.getSuit(), firstOpenCard.getRank() + 1);
+        printOpenDraw(firstOpenCard);
         computeScoreWhenAddingNewCard(firstOpenCard);
 
     }
@@ -55,6 +54,8 @@ public class Player {
             SingleCard newCard = Dealer.deal();
             openCards.add(newCard);
             computeScoreWhenAddingNewCard(newCard);
+            printOpenDraw(newCard);
+
 
             // Judge whether Bust.
             if (currentScore > 21) {
@@ -111,11 +112,23 @@ public class Player {
         playerNum++;
     }
 
+    private void printOpenDraw(SingleCard firstOpenCard) {
+        System.out.printf("%s takes %s %d \n", playerName, firstOpenCard.getSuit(), firstOpenCard.getRank() + 1);
+    }
+
     public int getToken() {
         return token;
     }
 
     public void setToken(int token) {
         this.token = token;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
