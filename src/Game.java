@@ -5,7 +5,7 @@ public class Game {
 
     private int playerNumInGame = 0;
     private int currentTurn;
-    private int passedPlayerNum = 0;
+    public static int passedPlayerNum = 0;
     public Player[] players;
     public Dealer dealer;
     private Scanner scanner = new Scanner(System.in);
@@ -21,11 +21,11 @@ public class Game {
         if (botNum > pNum) {
             System.out.println("Error! The number of Bots must be less than of Players!");
         } else {
-            Player[] players = new Player[pNum - 1];
-            Dealer dealer = new Dealer();
-//            for (int i = 0; i < pNum - 1; i++) {
-//                players[i] = new  Player();
-//            }
+            players = new Player[pNum - 1];
+            for (int i = 0; i < pNum - 1; i++)
+                players[i] = new Player();
+            dealer = new Dealer("Dealer");
+
             playerNumInGame = Player.playerNum;
             currentTurn = 1;
             scoreBoard = new int[pNum];
@@ -39,7 +39,7 @@ public class Game {
 
     public void play() {
         //Deal the initial two hand cards.
-        for (int i = 0; i < playerNumInGame; i++) {
+        for (int i = 0; i < playerNumInGame - 1; i++) {
             players[i].initialHand();
         }
         dealer.initialHand();
@@ -61,7 +61,7 @@ public class Game {
     }
 
     private void hitOrStand() {
-        for (int i = 0; i < playerNumInGame; i++) {
+        for (int i = 0; i < playerNumInGame - 1; i++) {
             if (players[i].status == 0) {
                 System.out.println(players[i].playerName + ", do you want to hit another card ? (1 for yes, others for no)");
                 yesOrNoFlag = scanner.nextInt();
@@ -108,4 +108,6 @@ public class Game {
         }
 
     }
+
+
 }

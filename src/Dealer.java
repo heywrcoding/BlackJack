@@ -1,4 +1,7 @@
 public class Dealer extends Player {
+    public Dealer(String name) {
+        super(name);
+    }
 
     public static SingleCard deal() {
         SingleCard card = new SingleCard();
@@ -10,6 +13,10 @@ public class Dealer extends Player {
                 //High-low strategy
                 if (currentScore < 11) {
                     hit();
+                }
+                else {
+                    stand();
+                    Game.passedPlayerNum++;
                 }
                 //else if
             }

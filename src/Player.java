@@ -15,23 +15,18 @@ public class Player {
     protected LinkedList<SingleCard> closeCards = new LinkedList<SingleCard>();
 
     Player() {
-        status = 0;
-        turnNum = 1;
-        playerNum++;
+        initialization();
         playerName = "player " + Integer.toString(playerNum);
+        System.out.println();
     }
 
     Player(String name) {
-        status = 0;
-        turnNum = 1;
-        playerNum++;
+        initialization();
         playerName = name;
     }
 
     Player(int t) {
-        status = 0;
-        turnNum = 1;
-        playerNum++;
+        initialization();
         playerName = "player " + Integer.toString(playerNum);
         token = t;
     }
@@ -39,12 +34,12 @@ public class Player {
     public void initialHand() {
         SingleCard firstCloseCard = Dealer.deal();
         closeCards.add(firstCloseCard);
-        System.out.printf("%s takes * (hidden) ", playerName);
+        System.out.printf("%s takes * (hidden) \n", playerName);
         computeScoreWhenAddingNewCard(firstCloseCard);
 
         SingleCard firstOpenCard = Dealer.deal();
         openCards.add(firstOpenCard);
-        System.out.printf("%s takes %s ", playerName, firstOpenCard.getSuit());
+        System.out.printf("%s takes %s %d \n", playerName, firstOpenCard.getSuit(), firstOpenCard.getRank() + 1);
         computeScoreWhenAddingNewCard(firstOpenCard);
 
     }
@@ -110,5 +105,17 @@ public class Player {
         }
 
     }
+    private void initialization() {
+        status = 0;
+        turnNum = 1;
+        playerNum++;
+    }
 
+    public int getToken() {
+        return token;
+    }
+
+    public void setToken(int token) {
+        this.token = token;
+    }
 }
