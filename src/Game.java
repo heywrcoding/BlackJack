@@ -15,7 +15,7 @@ public class Game {
     private int botDealerOpFlag; // Flag bit to identify bot Dealer's Operation. 0 for no operation, 1 for hitOrStand.
     private int botLevel = 1; // Difficulty level.
     private int winnerIndex = 0;
-    private int max;
+    private int winnerScore;
 
     Game(int pNum, int botNum) {
         if (botNum > pNum) {
@@ -46,16 +46,21 @@ public class Game {
 
         //Hit or Stand.
         while (playerNumInGame > passedPlayerNum) {
+//            System.out.println("hit or stand: ");
+//            System.out.println("playerNumInGame: " + playerNumInGame);
+//            System.out.println("passedPlayerNum: " + passedPlayerNum);
             hitOrStand();
         }
 
+//        System.out.println("playerNumInGame: " + playerNumInGame);
+//        System.out.println("passedPlayerNum: " + passedPlayerNum);
+
         if (passedPlayerNum == playerNumInGame) {
             checkWinner();
-            if (winnerIndex == playerNumInGame - 1){
+            if (winnerIndex == playerNumInGame - 1) {
                 System.out.println("Winner is " + dealer.playerName);
                 printScore();
-            }
-            else {
+            } else {
                 System.out.println("Winner is " + players[winnerIndex].playerName);
                 printScore();
             }
@@ -69,6 +74,9 @@ public class Game {
                 yesOrNoFlag = scanner.nextInt();
                 if (yesOrNoFlag == 1) {
                     players[i].hit();
+                    if (players[i].getBustFlag() == 1){
+                        passedPlayerNum++;
+                    }
                 } else {
                     players[i].stand();
                     passedPlayerNum++;
@@ -79,11 +87,17 @@ public class Game {
 
         }
         if (botDealerFlag == 1) {
-            botDealerOpFlag = 1;
-            dealer.botDealer(botDealerOpFlag, botLevel);
-            botDealerOpFlag = 0;
-        }
+            if (dealer.getStatus() == 0){
 
+                botDealerOpFlag = 1;
+                dealer.botDealer(botDealerOpFlag, botLevel);
+                botDealerOpFlag = 0;
+
+                if (dealer.getStatus() == 1){
+                    passedPlayerNum++;
+                }
+            }
+        }
     }
 
     private void checkWinner() {
@@ -91,7 +105,14 @@ public class Game {
         Player.endFlag = 1;
         scoreBoard = new int[playerNumInGame];
         int i;
-        max = players[0].getScore(); //Initialization.
+
+        if (players[0].getBustFlag() == 0) {    //Initialization.
+            winnerIndex = 0;
+            winnerScore = players[0].getScore();
+        } else {
+
+        }
+
         for (i = 0; i < playerNumInGame; i++) {
             if (i < playerNumInGame - 1) {
                 scoreBoard[i] = players[i].getScore();
@@ -103,8 +124,10 @@ public class Game {
 
             if (i > 0) {
                 if (scoreBoard[i] > scoreBoard[i - 1]) {
-                    winnerIndex = i;
-                    max = scoreBoard[i];
+                    if (players[i].getBustFlag() == 0) {
+                        winnerIndex = i;
+                        winnerScore = scoreBoard[i];
+                    }
                 }
             }
         }

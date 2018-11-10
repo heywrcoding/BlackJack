@@ -5,13 +5,14 @@ public class Player {
     public static int playerNum = 0;
     public static int endFlag = 0;
 
-    private int status; //Whether a player has passed. 0 for initial value; 1 for has passed.
+    protected int status; //Whether a player has passed. 0 for initial value; 1 for has passed.
     protected int currentScore; //Total score of hand cards.
     private static int turnNum;
     private int token;
     private int aceNum = 0;
     protected LinkedList<SingleCard> openCards = new LinkedList<SingleCard>();
     protected LinkedList<SingleCard> closeCards = new LinkedList<SingleCard>();
+    private int bustFlag = 0; //0 for not bust, 1 for bust.
 
     Player() {
         initialization();
@@ -33,7 +34,7 @@ public class Player {
     public void initialHand() {
         SingleCard firstCloseCard = Dealer.deal();
         closeCards.add(firstCloseCard);
-        System.out.printf("%s takes * (hidden) \n", playerName);
+        System.out.printf("%s takes %s %d (hidden) \n", playerName, firstCloseCard.getSuit(), firstCloseCard.getRank() + 1);
         computeScoreWhenAddingNewCard(firstCloseCard);
 
         SingleCard firstOpenCard = Dealer.deal();
@@ -60,6 +61,7 @@ public class Player {
             // Judge whether Bust.
             if (currentScore > 21) {
                 System.out.println(playerName + " Bust!");
+                bustFlag = 1;
                 status = 1;
             }
 
@@ -131,4 +133,9 @@ public class Player {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public int getBustFlag() {
+        return bustFlag;
+    }
+
 }

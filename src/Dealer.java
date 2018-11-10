@@ -16,7 +16,6 @@ public class Dealer extends Player {
                 }
                 else {
                     stand();
-                    Game.passedPlayerNum++;
                 }
                 //else if
             }
