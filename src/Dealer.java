@@ -1,25 +1,25 @@
-public class Dealer extends Player {
-    public Dealer(String name) {
+class Dealer extends Player {
+    Dealer(String name) {
         super(name);
     }
 
-    public static SingleCard deal() {
-        SingleCard card = new SingleCard();
-        return card;
+    static SingleCard deal() {
+        return new SingleCard();
     }
-    public void botDealer(int operationFlag, int botLevel) {
+    SingleCard botDealer(int operationFlag, int botLevel) {
         if (operationFlag == 1) {
             if (botLevel == 1){
                 //High-low strategy
-                if (currentScore < 11) {
-                    hit();
+                if (currentScore < 17) {
+                    return hit();
                 }
                 else {
                     stand();
+                    return deal();
                 }
                 //else if
             }
         }
-
+        return deal();
     }
 }

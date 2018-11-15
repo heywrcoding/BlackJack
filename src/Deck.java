@@ -2,7 +2,7 @@
  *  Rank: 0 - A, 1 - 2, ..., 12 - K
  */
 import java.util.Random;
-public class Deck {
+class Deck {
     private static int totalNum;
     private static int heartNum;
     private static int spadeNum;

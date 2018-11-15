@@ -1,10 +1,13 @@
+import java.io.*;
 public class Main {
-    public static void main(String[] args) {
+    public static void main (String[] args) throws Exception {
 
 //        testDraw();
 
-        int deckNum = 1;
-        Deck deck = new Deck(deckNum);
+
+
+//        int deckNum = 1;
+//        Deck deck = new Deck(deckNum);
         Game game = new Game(2,1);
         game.play();
 

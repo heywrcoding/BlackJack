@@ -1,4 +1,4 @@
-public class SingleCard {
+class SingleCard {
     private String suit;
     private int rank;
 
