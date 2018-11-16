@@ -1,6 +1,11 @@
 import java.util.*;
 
 class Utils {
+    static final int openFlag = 0;
+    static final int closeFlag = 1;
+    static final int endFlag = 0;
+    static final int continueFlag = 1;
+
     static void printToQueue(Queue<String> outputQueue, String str) {
         outputQueue.offer(str);
 //        System.out.println(str);

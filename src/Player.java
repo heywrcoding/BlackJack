@@ -8,7 +8,7 @@ public class Player {
     protected int status; //Whether a player has passed. 0 for initial value; 1 for has passed.
     protected int currentScore; //Total score of hand cards.
     private static int turnNum;
-    private int token;
+    int wager;
     private int aceNum = 0;
     protected LinkedList<SingleCard> openCards = new LinkedList<SingleCard>();
     protected LinkedList<SingleCard> closeCards = new LinkedList<SingleCard>();
@@ -17,20 +17,21 @@ public class Player {
 
     Player() {
         this("", 0);
-        playerName = "player " + Integer.toString(playerNum);
-        System.out.println();
     }
 
     Player(String name) {
         this(name,0);
-//        playerName = name;
+    }
+
+    Player(int t) {
+        this("", t);
     }
 
     Player(String name, int t) {
         status = 0;
         turnNum = 1;
         playerNum++;
-        token = t;
+        wager = t;
         if (name.equals(""))
             playerName = "player " + Integer.toString(playerNum);
         else
@@ -60,7 +61,7 @@ public class Player {
             openCards.add(newCard);
             computeScoreWhenAddingNewCard(newCard);
 
-            Utils.printSuitRank(newCard,this, 0);
+            Utils.printSuitRank(newCard,this, Utils.openFlag);
 
             // Judge whether Bust.
             judgeBust();
@@ -120,16 +121,29 @@ public class Player {
         }
     }
 
-//    private void printOpenDraw(SingleCard firstOpenCard) {
-//        System.out.printf("%s takes %s %d \n", playerName, firstOpenCard.getSuit(), firstOpenCard.getRank() + 1);
-//    }
+    public int makeBet() {
+        Utils.printToQueue(outputQueue, playerName + ", now you have " + wager + " wager. Please make a bet: (Unit: $1)");
+        Utils.printToQueue(Game.getGameQueue(), playerName + ", now you have " + wager +" wager. Please make a bet: (Unit: $1)");
 
-    public int getToken() {
-        return token;
+        Utils.printFromQueue(outputQueue);
+        Scanner scanner = new Scanner(System.in);
+        int betAccount = scanner.nextInt();
+        wager -= betAccount;
+        Utils.printToQueue(outputQueue, betAccount + "");
+        Utils.printToQueue(Game.getGameQueue(), betAccount + "");
+        return betAccount;
     }
 
-    public void setToken(int token) {
-        this.token = token;
+    public int isContinue() {
+        Utils.printToQueue(outputQueue, playerName + ", now you have " + wager + " wager. Do you want another game? (0 for end, 1 for continue)");
+        Utils.printToQueue(Game.getGameQueue(), playerName + ", now you have " + wager + " wager. Do you want another game? (0 for end, 1 for continue)");
+
+        Utils.printFromQueue(outputQueue);
+        Scanner scanner = new Scanner(System.in);
+        int i = scanner.nextInt();
+        Utils.printToQueue(outputQueue, i + "");
+        Utils.printToQueue(Game.getGameQueue(), i + "");
+        return i;
     }
 
     public int getStatus() {
@@ -154,5 +168,9 @@ public class Player {
 
     public LinkedList<SingleCard> getCloseCards() {
         return closeCards;
+    }
+
+    public int getWager() {
+        return wager;
     }
 }

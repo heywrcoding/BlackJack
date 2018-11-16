@@ -1,14 +1,11 @@
-import java.security.KeyStore;
 import java.util.*;
-import java.io.IOException;
 
 public class Game {
-    private int endFlag = 0; //0 for initial value, 1 for game end to check winner.
-
+//    private int endFlag = 0; //0 for initial value, 1 for game end to check winner.
     private int playerNumInGame = 0;
     private int currentTurn;
     private static int passedPlayerNum = 0;
-    private Player[] players;
+    private ArrayList<Player> players = new ArrayList<Player>();
     private Dealer dealer;
     private Scanner scanner = new Scanner(System.in);
     private int yesOrNoFlag = 1;
@@ -19,8 +16,9 @@ public class Game {
     private int winnerIndex = -1;
     private int winnerScore;
     private static Queue<String> gameQueue = new LinkedList<String>();
+    private int betTotalAccount = 0;
 
-    Game(int pNum, int botNum) {
+    Game(int pNum, int botNum, int wager) {
 
         Utils.printToQueue(gameQueue, "*********************");
         Utils.printToQueue(gameQueue, "Game Log:");
@@ -33,10 +31,11 @@ public class Game {
             Utils.printToQueue(gameQueue, "Error! The number of Bots must be less than of Players!");
             System.out.println("Error! The number of Bots must be less than of Players!");
         } else {
-            players = new Player[pNum - 1];
+//            player = new Player[pNum - 1];
             for (int i = 0; i < pNum - 1; i++)
-                players[i] = new Player();
-            dealer = new Dealer("Dealer");
+//                Player player = new Player(wager);
+                players.add(new Player(wager));
+            dealer = new Dealer("Dealer", wager);
 
             playerNumInGame = Player.playerNum;
             currentTurn = 1;
@@ -52,6 +51,44 @@ public class Game {
     }
 
     void play() {
+        while (true) {
+            start();     //a game
+
+            //no players, game over
+            if (playerNumInGame <= 1) {
+                break;
+            }
+
+            //stop players with no wager after a game
+            for (int i = 0; i < playerNumInGame - 1; i++) {
+                if (players.get(i).getWager() <= 0) {
+                    players.remove(i);
+                    playerNumInGame--;
+                }
+            }
+            if (dealer.getWager() <= 0) {
+                Utils.printToQueue(gameQueue, "Dealer has no wager, game over, players win.");
+                break;
+            }
+
+            //ask whether players want any more game
+            for (int i = 0; i < playerNumInGame - 1; i++) {
+                if (players.get(i).isContinue() == Utils.endFlag) {
+                    players.remove(i);
+                    playerNumInGame--;
+                }
+            }
+
+        }
+    }
+
+    void start() {
+
+        for (int i = 0; i < playerNumInGame - 1; i++) {
+            betTotalAccount += players.get(i).makeBet();
+        }
+        betTotalAccount += dealer.makeBet();
+
         //Deal the initial two hand cards.
         initialHand();
 
@@ -61,7 +98,7 @@ public class Game {
 
             // clear console output
              try {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor(); // 清屏命令
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             }
             catch (Exception e){
                 System.out.println(e);
@@ -77,10 +114,12 @@ public class Game {
             else if (winnerIndex == playerNumInGame - 1) {
                 printScore();
                 Utils.printToQueue(gameQueue, "Winner is " + dealer.playerName);
+                dealer.wager += betTotalAccount;
 
             } else {
                 printScore();
-                Utils.printToQueue(gameQueue, "Winner is " + players[winnerIndex].playerName);
+                Utils.printToQueue(gameQueue, "Winner is " + players.get(winnerIndex).playerName);
+                players.get(winnerIndex).wager += betTotalAccount;
             }
         }
 
@@ -90,8 +129,8 @@ public class Game {
     private void initialHand() {
 
         for (int i = 0; i < playerNumInGame - 1; i++) {
-            getClosedCard(players[i]);
-            getOpenCard(players[i]);
+            getClosedCard(players.get(i));
+            getOpenCard(players.get(i));
         }
 
 //        dealer.initialHand:
@@ -101,22 +140,22 @@ public class Game {
 
     private void hitOrStand() {
         for (int i = 0; i < playerNumInGame - 1; i++) {
-            if (players[i].getStatus() == 0) {
-                Utils.printToQueue(players[i].getOutputQueue(), players[i].playerName + ", do you want to hit another card ? (1 for yes, others for no)");
-                Utils.printFromQueue(players[i].getOutputQueue());
+            if (players.get(i).getStatus() == 0) {
+                Utils.printToQueue(players.get(i).getOutputQueue(), players.get(i).playerName + ", do you want to hit another card ? (1 for yes, others for no)");
+                Utils.printFromQueue(players.get(i).getOutputQueue());
                 yesOrNoFlag = scanner.nextInt();
-                Utils.printToQueue(players[i].getOutputQueue(), yesOrNoFlag + "");
+                Utils.printToQueue(players.get(i).getOutputQueue(), yesOrNoFlag + "");
                 if (yesOrNoFlag == 1) {
-                    printPublicInfo(players[i], 0, players[i].hit());
-                    if (players[i].getBustFlag() == 1){
+                    printPublicInfo(players.get(i), 0, players.get(i).hit());
+                    if (players.get(i).getBustFlag() == 1){
                         passedPlayerNum++;
                     }
                 } else {
-                    players[i].stand();
+                    players.get(i).stand();
                     passedPlayerNum++;
                 }
             } else {
-                players[i].stand();
+                players.get(i).stand();
             }
 
 
@@ -138,20 +177,20 @@ public class Game {
     private void checkWinner() {
 
         Utils.printToQueue(gameQueue, "--------check winner----------");
-        endFlag = 1;
+//        endFlag = 1;
         Player.endFlag = 1;
         scoreBoard = new int[playerNumInGame];
         int i;
 
-        if (players[0].getBustFlag() == 0) {    //Initialization.
+        if (players.get(0).getBustFlag() == 0) {    //Initialization.
             winnerIndex = 0;
-            winnerScore = players[0].getScore();
+            winnerScore = players.get(0).getScore();
         }
 
         for (i = 0; i < playerNumInGame; i++) {
             if (i < playerNumInGame - 1) {
-                if (players[i].getBustFlag() == 0)
-                    scoreBoard[i] = players[i].getScore();
+                if (players.get(i).getBustFlag() == 0)
+                    scoreBoard[i] = players.get(i).getScore();
                 else
                     scoreBoard[i] = 0;
 
@@ -167,7 +206,7 @@ public class Game {
             if (i > 0) {
                 if (scoreBoard[i] > scoreBoard[i - 1]) {
                     if (i < playerNumInGame - 1) {
-                        if (players[i].getBustFlag() == 0) {
+                        if (players.get(i).getBustFlag() == 0) {
                             winnerIndex = i;
                             winnerScore = scoreBoard[i];
                         }
@@ -186,7 +225,7 @@ public class Game {
 
     private void printScore() {
         for (int i = 0; i < playerNumInGame - 1; i++) {
-            Utils.printToQueue(gameQueue, players[i].playerName + " gets " + players[i].getScore());
+            Utils.printToQueue(gameQueue, players.get(i).playerName + " gets " + players.get(i).getScore());
         }
         Utils.printToQueue(gameQueue, dealer.playerName + " gets " + dealer.getScore());
     }
@@ -195,7 +234,7 @@ public class Game {
         SingleCard firstOpenCard = Dealer.deal();
         p.openCards.add(firstOpenCard);
 
-        Utils.printSuitRank(firstOpenCard, p, 0);
+        Utils.printSuitRank(firstOpenCard, p, Utils.openFlag);
         p.computeScoreWhenAddingNewCard(firstOpenCard);
 
         printPublicInfo(p, 0, firstOpenCard);
@@ -205,7 +244,7 @@ public class Game {
         SingleCard firstCloseCard = Dealer.deal();
         p.getCloseCards().add(firstCloseCard);
 
-        Utils.printSuitRank(firstCloseCard, p, 1);
+        Utils.printSuitRank(firstCloseCard, p, Utils.closeFlag);
         p.computeScoreWhenAddingNewCard(firstCloseCard);
 
         printPublicInfo(p, 1, Dealer.deal());
@@ -231,14 +270,14 @@ public class Game {
     private void printPublicInfo(Player p, int openOrClose, SingleCard card) {
         if (openOrClose == 0){   //open flag = 0
             for (int i = 0; i < playerNumInGame - 1; i++) {
-                if (!players[i].playerName.equals(p.playerName))
-                    Utils.printToQueue(players[i].getOutputQueue(),p.playerName + " takes " + card.getSuit() + " " + (card.getRank() + 1));
+                if (!players.get(i).playerName.equals(p.playerName))
+                    Utils.printToQueue(players.get(i).getOutputQueue(),p.playerName + " takes " + card.getSuit() + " " + (card.getRank() + 1));
             }
         }
         else {   //close flag = 1
             for (int i = 0; i < playerNumInGame - 1; i++) {
-                if (!players[i].playerName.equals(p.playerName))
-                    Utils.printToQueue(players[i].getOutputQueue(),p.playerName + " takes " +  " ** " + " (hidden) ");
+                if (!players.get(i).playerName.equals(p.playerName))
+                    Utils.printToQueue(players.get(i).getOutputQueue(),p.playerName + " takes " +  " ** " + " (hidden) ");
             }
         }
     }

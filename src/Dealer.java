@@ -1,6 +1,6 @@
 class Dealer extends Player {
-    Dealer(String name) {
-        super(name);
+    Dealer(String name, int wager) {
+        super(name, wager);
     }
 
     static SingleCard deal() {
@@ -21,5 +21,11 @@ class Dealer extends Player {
             }
         }
         return deal();
+    }
+
+    @Override
+    public int makeBet() {
+        wager -= 20;
+        return 20;
     }
 }

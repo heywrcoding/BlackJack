@@ -8,7 +8,7 @@ public class Main {
 
 //        int deckNum = 1;
 //        Deck deck = new Deck(deckNum);
-        Game game = new Game(2,1);
+        Game game = new Game(2,1, 1000);
         game.play();
 
     }
