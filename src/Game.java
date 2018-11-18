@@ -100,13 +100,7 @@ public class Game {
         while (playerNumInGame > passedPlayerNum) {
             hitOrStand();
 
-            // clear console output
-             try {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            }
-            catch (Exception e){
-                System.out.println(e);
-            }
+            Utils.clearConsole();
         }
 
 
@@ -133,6 +127,7 @@ public class Game {
             printPublicInfo("--------a new game----------");
         }
 
+        Utils.clearConsole();
         Utils.printFromQueue(gameQueue);
     }
 
@@ -156,6 +151,7 @@ public class Game {
         for (int i = 0; i < playerNumInGame - 1; i++) {
             if (players.get(i).getStatus() == 0) {
                 Utils.printToQueue(players.get(i).getOutputQueue(), players.get(i).playerName + ", do you want to hit another card ? (1 for yes, other numbers for no)");
+                Utils.clearConsole();
                 Utils.printFromQueue(players.get(i).getOutputQueue());
                 Scanner scanner = new Scanner(System.in);
                 while (!scanner.hasNextInt()) {
@@ -171,6 +167,7 @@ public class Game {
                     }
                 } else {
                     players.get(i).stand();
+                    printPublicInfo(players.get(i), players.get(i).playerName + " passes.");
                     passedPlayerNum++;
                 }
             } else {
@@ -188,6 +185,7 @@ public class Game {
                 botDealerOpFlag = 0;
 
                 if (dealer.getStatus() == 1){
+                    printPublicInfo("Dealer passes.");
                     passedPlayerNum++;
                 }
             }

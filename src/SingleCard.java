@@ -11,11 +11,11 @@ class SingleCard {
     //    private void setter (){
 //
 //    }
-    public String getSuit() {
+    String getSuit() {
         return suit;
     }
 
-    public int getRank() {
+    int getRank() {
         return rank;
     }
 }

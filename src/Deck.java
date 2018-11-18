@@ -27,10 +27,9 @@ class Deck {
             diamond[rank] = deckNum;
         }
     }
-    public static String[] draw(){
+    static String[] draw(){
         if(totalNum == 0){
-            String[] wrongMessage = {"wrong", "wrong"};
-            return wrongMessage;
+            return new String[] {"wrong", "wrong"};
         }
         // Begin drawing
         String[] card = randomCardGen();

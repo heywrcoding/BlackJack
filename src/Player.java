@@ -1,17 +1,17 @@
 import java.util.*;
 
 public class Player {
-    public String playerName;
-    public static int playerNum = 0;
-    public static int endFlag = 0;
+    String playerName;
+    static int playerNum = 0;
+    static int endFlag = 0;
 
-    protected int status; //Whether a player has passed. 0 for initial value; 1 for has passed.
-    protected int currentScore; //Total score of hand cards.
+    private int status; //Whether a player has passed. 0 for initial value; 1 for has passed.
+    int currentScore; //Total score of hand cards.
     private static int turnNum;
     int wager;
     private int aceNum = 0;
-    protected LinkedList<SingleCard> openCards = new LinkedList<SingleCard>();
-    protected LinkedList<SingleCard> closeCards = new LinkedList<SingleCard>();
+    LinkedList<SingleCard> openCards = new LinkedList<SingleCard>();
+    private LinkedList<SingleCard> closeCards = new LinkedList<SingleCard>();
     private int bustFlag = 0; //0 for not bust, 1 for bust.
     private Queue<String> outputQueue = new LinkedList<String>();
 
@@ -47,7 +47,7 @@ public class Player {
 
 
 
-    public void stand() {
+    void stand() {
         status = 1;
         System.out.println(playerName + " passes.");
         Utils.printToQueue(outputQueue,playerName + " passes.");
@@ -55,7 +55,7 @@ public class Player {
         turnNum++;
     }
 
-    public SingleCard hit() {
+    SingleCard hit() {
         if (status == 0) {
             SingleCard newCard = Dealer.deal();
             openCards.add(newCard);
@@ -85,7 +85,7 @@ public class Player {
 
     }
 
-    public int getScore() {
+    int getScore() {
         if (endFlag == 1) {
             if (currentScore > 11) {
                 return currentScore;
@@ -97,7 +97,7 @@ public class Player {
         return 0;
     }
 
-    public void computeScoreWhenAddingNewCard(SingleCard aCard) {
+    void computeScoreWhenAddingNewCard(SingleCard aCard) {
         if (aCard.getRank() < 10 && aCard.getRank() != 0) {
             currentScore = currentScore + aCard.getRank() + 1;
         } else if (aCard.getRank() >= 10) {
@@ -111,7 +111,7 @@ public class Player {
 
     }
 
-    public void judgeBust() {
+    void judgeBust() {
         if (currentScore > 21) {
             System.out.println(playerName + " Bust!");
             Utils.printToQueue(outputQueue,playerName + " Bust!");
@@ -124,7 +124,7 @@ public class Player {
     public int makeBet() {
         Utils.printToQueue(outputQueue, playerName + ", now you have " + wager + " wager. Please make a bet: (Unit: $1)");
         Utils.printToQueue(Game.getGameQueue(), playerName + ", now you have " + wager +" wager. Please make a bet: (Unit: $1)");
-
+        Utils.clearConsole();
         Utils.printFromQueue(outputQueue);
         Scanner scanner = new Scanner(System.in);
         int betAccount = 0;
@@ -148,10 +148,10 @@ public class Player {
         return betAccount;
     }
 
-    public int isContinue() {
+    int isContinue() {
         Utils.printToQueue(outputQueue, playerName + ", now you have " + wager + " wager. Do you want another game? (0 for end, 1 for continue)");
         Utils.printToQueue(Game.getGameQueue(), playerName + ", now you have " + wager + " wager. Do you want another game? (0 for end, 1 for continue)");
-
+        Utils.clearConsole();
         Utils.printFromQueue(outputQueue);
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNext("[0-1]")) {
@@ -164,7 +164,7 @@ public class Player {
         return i;
     }
 
-    public int getStatus() {
+    int getStatus() {
         return status;
     }
 
@@ -172,23 +172,23 @@ public class Player {
         this.status = status;
     }
 
-    public int getBustFlag() {
+    int getBustFlag() {
         return bustFlag;
     }
 
-    public Queue<String> getOutputQueue() {
+    Queue<String> getOutputQueue() {
         return outputQueue;
     }
 
-    public LinkedList<SingleCard> getOpenCards() {
+    LinkedList<SingleCard> getOpenCards() {
         return openCards;
     }
 
-    public LinkedList<SingleCard> getCloseCards() {
+    LinkedList<SingleCard> getCloseCards() {
         return closeCards;
     }
 
-    public int getWager() {
+    int getWager() {
         return wager;
     }
 }

@@ -67,4 +67,14 @@ class Utils {
         }
     }
 
+    static void clearConsole() {
+        // clear console output
+        try {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        }
+        catch (Exception e){
+            System.out.println("Console clear error!");
+        }
+    }
+
 }
