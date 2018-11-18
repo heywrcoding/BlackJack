@@ -2,17 +2,15 @@ import java.util.*;
 
 public class Game {
 //    private int endFlag = 0; //0 for initial value, 1 for game end to check winner.
-    private int playerNumInGame = 0;
+
     private int currentTurn;
+    private int playerNumInGame = 0;
     private static int passedPlayerNum = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
     private Dealer dealer;
     private Scanner scanner = new Scanner(System.in);
-    private int yesOrNoFlag = 1;
     private int[] scoreBoard;
     private int botDealerFlag; //Flag bit to open/close bot Dealer. 0 for close, 1 for open.
-    private int botDealerOpFlag; // Flag bit to identify bot Dealer's Operation. 0 for no operation, 1 for hitOrStand.
-    private int botLevel = 1; // Difficulty level.
     private int winnerIndex = -1;
     private int winnerScore;
     private static Queue<String> gameQueue = new LinkedList<String>();
@@ -54,11 +52,6 @@ public class Game {
         while (true) {
             start();     //a game
 
-            //no players, game over
-            if (playerNumInGame <= 1) {
-                break;
-            }
-
             //stop players with no wager after a game
             for (int i = 0; i < playerNumInGame - 1; i++) {
                 if (players.get(i).getWager() <= 0) {
@@ -74,20 +67,32 @@ public class Game {
             //ask whether players want any more game
             for (int i = 0; i < playerNumInGame - 1; i++) {
                 if (players.get(i).isContinue() == Utils.endFlag) {
+                    Utils.printToQueue(players.get(i).getOutputQueue(), "Game Over.");
+                    printPublicInfo(players.get(i), "Game Over.");
                     players.remove(i);
                     playerNumInGame--;
                 }
             }
 
+            //no players, game over
+            if (playerNumInGame <= 1) {
+                Utils.printToQueue(getGameQueue(), "Game Over.");
+                Utils.printFromQueue(getGameQueue());
+                break;
+            }
+
         }
     }
 
-    void start() {
+    private void start() {
 
         for (int i = 0; i < playerNumInGame - 1; i++) {
             betTotalAccount += players.get(i).makeBet();
         }
-        betTotalAccount += dealer.makeBet();
+        int dealerBet = dealer.makeBet();
+        betTotalAccount += dealerBet;
+        Utils.printToQueue(Game.getGameQueue(), "Dealer makes a bet: $" + dealerBet);
+        printPublicInfo(dealer, "Dealer makes a bet: $" + dealerBet);
 
         //Deal the initial two hand cards.
         initialHand();
@@ -110,17 +115,23 @@ public class Game {
             checkWinner();
             if (winnerIndex == -1){
                 Utils.printToQueue(gameQueue, "No winner!");
+                printPublicInfo("No winner!");
             }
             else if (winnerIndex == playerNumInGame - 1) {
                 printScore();
                 Utils.printToQueue(gameQueue, "Winner is " + dealer.playerName);
+                printPublicInfo("Winner is " + dealer.playerName);
                 dealer.wager += betTotalAccount;
 
             } else {
                 printScore();
                 Utils.printToQueue(gameQueue, "Winner is " + players.get(winnerIndex).playerName);
+                printPublicInfo("Winner is " + players.get(winnerIndex).playerName);
                 players.get(winnerIndex).wager += betTotalAccount;
             }
+
+            Utils.printToQueue(gameQueue,"--------a new game----------");
+            printPublicInfo("--------a new game----------");
         }
 
         Utils.printFromQueue(gameQueue);
@@ -139,6 +150,10 @@ public class Game {
     }
 
     private void hitOrStand() {
+        int botDealerOpFlag; // Flag bit to identify bot Dealer's Operation. 0 for no operation, 1 for hitOrStand.
+        int botLevel = 1; // Difficulty level.
+        int yesOrNoFlag = 1;
+
         for (int i = 0; i < playerNumInGame - 1; i++) {
             if (players.get(i).getStatus() == 0) {
                 Utils.printToQueue(players.get(i).getOutputQueue(), players.get(i).playerName + ", do you want to hit another card ? (1 for yes, others for no)");
@@ -160,6 +175,7 @@ public class Game {
 
 
         }
+
         if (botDealerFlag == 1) {
             if (dealer.getStatus() == 0){
 
@@ -177,7 +193,8 @@ public class Game {
     private void checkWinner() {
 
         Utils.printToQueue(gameQueue, "--------check winner----------");
-//        endFlag = 1;
+        printPublicInfo("--------check winner----------");
+
         Player.endFlag = 1;
         scoreBoard = new int[playerNumInGame];
         int i;
@@ -279,6 +296,19 @@ public class Game {
                 if (!players.get(i).playerName.equals(p.playerName))
                     Utils.printToQueue(players.get(i).getOutputQueue(),p.playerName + " takes " +  " ** " + " (hidden) ");
             }
+        }
+    }
+
+    private void printPublicInfo(Player p, String str) {
+        for (int i = 0; i < playerNumInGame - 1; i++) {
+            if (!players.get(i).playerName.equals(p.playerName))
+                Utils.printToQueue(players.get(i).getOutputQueue(),str);
+        }
+    }
+
+    private void printPublicInfo(String str) {
+        for (int i = 0; i < playerNumInGame - 1; i++) {
+            Utils.printToQueue(players.get(i).getOutputQueue(),str);
         }
     }
 

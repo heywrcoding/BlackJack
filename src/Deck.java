@@ -60,7 +60,13 @@ class Deck {
     }
     private static String[] randomCardGen(){
         Random random = new Random();
-        int randomNum = random.nextInt(totalNum);
+        int randomNum;
+        if (totalNum == 1) {
+            randomNum = 1;
+        }
+        else {
+            randomNum = random.nextInt(totalNum - 1) + 1;
+        }
         String[] card = new String[2];
         int rank = 0;
         String suit = "wrong";
