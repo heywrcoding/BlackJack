@@ -8,7 +8,6 @@ public class Game {
     private static int passedPlayerNum = 0;
     private ArrayList<Player> players = new ArrayList<Player>();
     private Dealer dealer;
-    private Scanner scanner = new Scanner(System.in);
     private int[] scoreBoard;
     private int botDealerFlag; //Flag bit to open/close bot Dealer. 0 for close, 1 for open.
     private int winnerIndex = -1;
@@ -156,8 +155,13 @@ public class Game {
 
         for (int i = 0; i < playerNumInGame - 1; i++) {
             if (players.get(i).getStatus() == 0) {
-                Utils.printToQueue(players.get(i).getOutputQueue(), players.get(i).playerName + ", do you want to hit another card ? (1 for yes, others for no)");
+                Utils.printToQueue(players.get(i).getOutputQueue(), players.get(i).playerName + ", do you want to hit another card ? (1 for yes, other numbers for no)");
                 Utils.printFromQueue(players.get(i).getOutputQueue());
+                Scanner scanner = new Scanner(System.in);
+                while (!scanner.hasNextInt()) {
+                    System.out.println("You have typed in invalid character, please typed again: ");
+                    scanner.next();
+                }
                 yesOrNoFlag = scanner.nextInt();
                 Utils.printToQueue(players.get(i).getOutputQueue(), yesOrNoFlag + "");
                 if (yesOrNoFlag == 1) {
@@ -219,7 +223,6 @@ public class Game {
 
             }
 
-            //怎么算平局
             if (i > 0) {
                 if (scoreBoard[i] > scoreBoard[i - 1]) {
                     if (i < playerNumInGame - 1) {
@@ -235,8 +238,12 @@ public class Game {
                         }
                     }
                 }
+                else if (scoreBoard[i] == winnerScore) {
+                    winnerIndex = -1;
+                }
             }
         }
+
 
     }
 

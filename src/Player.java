@@ -127,7 +127,21 @@ public class Player {
 
         Utils.printFromQueue(outputQueue);
         Scanner scanner = new Scanner(System.in);
-        int betAccount = scanner.nextInt();
+        int betAccount = 0;
+        while (true) {
+            if (!scanner.hasNextInt()){   //filter any character other than integers
+                System.out.println("You have typed in invalid character, please typed again: ");
+                String test = scanner.next();
+                continue;
+            }
+            betAccount = scanner.nextInt();
+            if (betAccount > wager){      //filter all bet more than current wager
+                System.out.println("You have typed in invalid character, please typed again: ");
+                continue;
+            }
+            break;
+        }
+//        int betAccount = scanner.nextInt();
         wager -= betAccount;
         Utils.printToQueue(outputQueue, betAccount + "");
         Utils.printToQueue(Game.getGameQueue(), betAccount + "");
@@ -140,6 +154,10 @@ public class Player {
 
         Utils.printFromQueue(outputQueue);
         Scanner scanner = new Scanner(System.in);
+        while (!scanner.hasNext("[0-1]")) {
+            System.out.println("You have typed in invalid character, please typed again: ");
+            scanner.next();
+        }
         int i = scanner.nextInt();
         Utils.printToQueue(outputQueue, i + "");
         Utils.printToQueue(Game.getGameQueue(), i + "");
